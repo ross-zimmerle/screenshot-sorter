@@ -11,6 +11,14 @@
 # Output of the go coverage tool
 *.out
 
+# Coverage artifacts
+coverage.txt
+coverage.html
+
+# Build output
+screenshot-sorter
+screenshot-sorter.exe
+
 # Go workspace file
 go.work
 
