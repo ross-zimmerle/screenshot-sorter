@@ -39,7 +39,7 @@ var SupportedFormats = map[string]bool{
 // NewImageProcessor creates a new image processor instance
 func NewImageProcessor(config *Config) *ImageProcessor {
 	return &ImageProcessor{
-		limiter: rate.NewLimiter(100, 1),
+		limiter: rate.NewLimiter(rate.Limit(100), 1), // 100 ops/sec
 		config:  config,
 	}
 }
@@ -102,8 +102,8 @@ func (p *ImageProcessor) ProcessFile(sourceDir, targetDir string, entry os.DirEn
 	// Get source and target paths
 	sourcePath := filepath.Join(sourceDir, entry.Name())
 
-	// Get file's actual timestamp
-	fileTime := fileutils.GetFileTime(fileInfo)
+	// Get file's actual timestamp in UTC
+	fileTime := fileutils.GetFileTime(fileInfo).UTC()
 	year := fileTime.Format("2006")
 	yearDir := filepath.Join(targetDir, year)
 

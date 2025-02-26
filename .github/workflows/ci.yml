@@ -35,9 +35,13 @@ jobs:
       run: go build -v ./...
     
     - name: Test
+      env:
+        SCREENSHOT_SORTER_TEST_USE_MODTIME: "1"
       run: go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
     
     - name: Benchmark
+      env:
+        SCREENSHOT_SORTER_TEST_USE_MODTIME: "1"
       run: go test -v -bench=. -run=^$ ./...
     
     - name: Upload coverage

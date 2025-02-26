@@ -1,16 +1,34 @@
-.PHONY: build test coverage lint clean
+.PHONY: build test coverage lint clean install all windows linux darwin
 
-# Build the application
+# Default target
+all: build
+
+# Install dependencies
+install:
+	go mod download
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+
+# Build the application for current platform
 build:
-	go build -v .
+	go build -v -o screenshot-sorter$(if $(filter windows,$(OS)),.exe,) .
+
+# Platform-specific builds
+windows:
+	cmd /V:ON /C "set GOOS=windows&& set GOARCH=amd64&& go build -v -o screenshot-sorter.exe ."
+
+linux:
+	bash -c "GOOS=linux GOARCH=amd64 go build -v -o screenshot-sorter ."
+
+darwin:
+	bash -c "GOOS=darwin GOARCH=amd64 go build -v -o screenshot-sorter ."
 
 # Run all tests
 test:
-	go test -v ./...
+	cmd /V:ON /C "set SCREENSHOT_SORTER_TEST_USE_MODTIME=1&& go test -v ./..."
 
 # Run tests with coverage
 coverage:
-	go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
+	cmd /V:ON /C "set SCREENSHOT_SORTER_TEST_USE_MODTIME=1&& go test -v -race -coverprofile=coverage.txt -covermode=atomic ./..."
 	go tool cover -html=coverage.txt -o coverage.html
 
 # Run linter
@@ -19,6 +37,5 @@ lint:
 
 # Clean build artifacts
 clean:
-	rm -f screenshot-sorter
-	rm -f coverage.txt
-	rm -f coverage.html
+	del /F /Q screenshot-sorter.exe 2>nul || exit 0
+	del /F /Q coverage.txt coverage.html 2>nul || exit 0
