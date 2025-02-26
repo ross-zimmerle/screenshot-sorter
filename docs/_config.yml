@@ -1,0 +1,8 @@
+title: Screenshot Sorter
+description: A tool to organize your screenshots and images into year-based folders
+theme: jekyll-theme-cayman
+show_downloads: true
+github:
+  repository_url: https://github.com/screenshot-sorter
+  zip_url: https://github.com/screenshot-sorter/releases/latest/download/screenshot-sorter.zip
+  tar_url: https://github.com/screenshot-sorter/releases/latest/download/screenshot-sorter.tar.gz
