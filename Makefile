@@ -6,7 +6,7 @@ all: build
 # Install dependencies
 install:
 	go mod download
-	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+	go install github.com/golangci/golint/cmd/golangci-lint@latest
 
 # Build the application for current platform
 build:
@@ -26,9 +26,14 @@ darwin:
 test:
 	cmd /V:ON /C "set SCREENSHOT_SORTER_TEST_USE_MODTIME=1&& go test -v ./..."
 
-# Run tests with coverage
+# Run tests with coverage (without race detector)
 coverage:
-	cmd /V:ON /C "set SCREENSHOT_SORTER_TEST_USE_MODTIME=1&& go test -v -race -coverprofile=coverage.txt -covermode=atomic ./..."
+	cmd /V:ON /C "set SCREENSHOT_SORTER_TEST_USE_MODTIME=1&& go test -v -coverprofile=coverage.txt -covermode=count ./..."
+	go tool cover -html=coverage.txt -o coverage.html
+
+# Run tests with coverage and race detector (requires GCC)
+coverage-race:
+	cmd /V:ON /C "set CGO_ENABLED=1&& set SCREENSHOT_SORTER_TEST_USE_MODTIME=1&& go test -v -race -coverprofile=coverage.txt -covermode=atomic ./..."
 	go tool cover -html=coverage.txt -o coverage.html
 
 # Run linter
