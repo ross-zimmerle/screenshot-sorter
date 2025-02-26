@@ -59,8 +59,9 @@ func (p *ImageProcessor) ProcessDirectory(sourceDir, targetDir string) error {
 
 	for _, entry := range entries {
 		// Rate limit operations
-		p.limiter.Wait(context.Background())
-
+		if err := p.limiter.Wait(context.Background()); err != nil {
+			return fmt.Errorf("rate limiter error: %w", err)
+		}
 		fullPath := filepath.Join(sourceDir, entry.Name())
 
 		if entry.IsDir() {
@@ -102,8 +103,8 @@ func (p *ImageProcessor) ProcessFile(sourceDir, targetDir string, entry os.DirEn
 	// Get source and target paths
 	sourcePath := filepath.Join(sourceDir, entry.Name())
 
-	// Get file's actual timestamp in UTC
-	fileTime := fileutils.GetFileTime(fileInfo).UTC()
+	// Get file's actual timestamp
+	fileTime := fileutils.GetFileTime(fileInfo)
 	year := fileTime.Format("2006")
 	yearDir := filepath.Join(targetDir, year)
 
@@ -119,7 +120,7 @@ func (p *ImageProcessor) ProcessFile(sourceDir, targetDir string, entry os.DirEn
 		// File exists, append timestamp from the original file
 		ext := filepath.Ext(entry.Name())
 		base := strings.TrimSuffix(entry.Name(), ext)
-		timestamp := fileTime.Format("20060102_150405")
+		timestamp := fileTime.UTC().Format("20060102_150405")
 		targetPath = filepath.Join(yearDir, fmt.Sprintf("%s_%s%s", base, timestamp, ext))
 	}
 

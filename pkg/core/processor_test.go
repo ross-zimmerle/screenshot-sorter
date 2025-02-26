@@ -206,6 +206,10 @@ func TestImageProcessor_ProcessFileWithConflictingTimes(t *testing.T) {
 }
 
 func TestImageProcessor_ProcessDirectoryRecursive(t *testing.T) {
+	// Set test environment to use ModTime
+	os.Setenv("SCREENSHOT_SORTER_TEST_USE_MODTIME", "1")
+	defer os.Unsetenv("SCREENSHOT_SORTER_TEST_USE_MODTIME")
+
 	// Create temporary test directory
 	tempDir, err := os.MkdirTemp("", "screenshot-sorter-test")
 	if err != nil {
@@ -298,6 +302,10 @@ func TestImageProcessor_ProcessDirectoryRecursive(t *testing.T) {
 }
 
 func TestImageProcessor_FileConflictWithTimestamp(t *testing.T) {
+	// Set test environment to use ModTime
+	os.Setenv("SCREENSHOT_SORTER_TEST_USE_MODTIME", "1")
+	defer os.Unsetenv("SCREENSHOT_SORTER_TEST_USE_MODTIME")
+
 	// Create temporary test directory
 	tempDir, err := os.MkdirTemp("", "screenshot-sorter-test")
 	if err != nil {
@@ -359,10 +367,12 @@ func TestImageProcessor_FileConflictWithTimestamp(t *testing.T) {
 		t.Errorf("Expected 2 files, got %d", len(files))
 	}
 
-	// Verify the filenames contain the correct timestamps
+	// Convert expected timestamp to UTC for comparison
+	timestampTime := time2.UTC()
+	expectedTimestamp := timestampTime.Format("20060102_150405")
 	expectedNames := map[string]bool{
-		"test.png":                 true,
-		"test_20230620_164500.png": true,
+		"test.png": true,
+		fmt.Sprintf("test_%s.png", expectedTimestamp): true,
 	}
 
 	for _, f := range files {

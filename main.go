@@ -27,7 +27,9 @@ func main() {
 
 	fmt.Println("\nScreenshot sorting complete!")
 	fmt.Println("Press Enter to exit...")
-	fmt.Scanln()
+	if _, err := fmt.Scanln(); err != nil && err.Error() != "unexpected newline" {
+		log.Printf("Error reading input: %v", err)
+	}
 }
 
 func parseFlags() *core.Config {
