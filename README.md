@@ -6,7 +6,7 @@ A simple command-line tool written in Go that automatically organizes image file
 
 ### Prerequisites
 
-- Go 1.24.0 or later
+- Go 1.20 or later
 
 ### Using Go Install
 ```bash
@@ -35,6 +35,8 @@ go build
 - 🔍 Dry-run mode to preview changes
 - 📌 Custom source and target directory support
 - 📝 Verbose logging option
+- 🚦 Rate limiting to prevent system overload (100 operations/second)
+- 🎯 Platform-specific timestamp handling
 
 ## Usage
 
@@ -89,8 +91,11 @@ The following image formats are supported (case-insensitive):
 
 ## Notes
 
-- File timestamps are based on the file's modification time
+- File timestamps are based on:
+  - Creation time on Windows
+  - Modification time on other platforms
 - Files are organized into year-based folders
+- Operations are rate-limited to 100 per second to prevent system overload
 - Duplicate filenames are handled automatically
 - Non-image files are ignored
 
