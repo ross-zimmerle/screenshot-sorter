@@ -17,7 +17,7 @@ A simple and efficient tool to organize your screenshots and images into year-ba
 screenshot-sorter [options]
 
 Options:
-  -source string    Source directory to process (default: current directory)
+  -source string    Source directory to process (default: executable directory)
   -target string    Target directory for sorted files (default: source directory)
   -dry-run         Show what would be done without making changes
   -recursive       Process subdirectories recursively
@@ -27,7 +27,7 @@ Options:
 
 ## Examples
 
-Sort images in the current directory:
+Sort images in the executable's directory:
 ```bash
 screenshot-sorter
 ```

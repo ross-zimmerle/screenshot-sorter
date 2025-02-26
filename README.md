@@ -39,7 +39,7 @@ go build
 ## Usage
 
 ### Basic Usage
-Simply run in the directory containing your images:
+Simply run the executable and it will process images in its directory:
 ```bash
 screenshot-sorter
 ```
@@ -49,7 +49,7 @@ screenshot-sorter
 screenshot-sorter [options]
 
 Options:
-  -source string    Source directory to process (default: current directory)
+  -source string    Source directory to process (default: executable directory)
   -target string    Target directory for sorted files (default: source directory)
   -dry-run         Show what would be done without making changes
   -recursive       Process subdirectories recursively

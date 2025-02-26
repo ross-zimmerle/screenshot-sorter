@@ -4,6 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
+	"path/filepath"
 
 	"github.com/screenshot-sorter/pkg/core"
 )
@@ -30,12 +32,26 @@ func main() {
 
 func parseFlags() *core.Config {
 	config := &core.Config{}
+
+	// Get executable directory as default
+	exePath, err := os.Executable()
+	if err != nil {
+		log.Fatal("Failed to get executable path:", err)
+	}
+	defaultDir := filepath.Dir(exePath)
+
 	flag.BoolVar(&config.DryRun, "dry-run", false, "Show what would be done without making changes")
 	flag.BoolVar(&config.Verbose, "verbose", false, "Show detailed processing information")
 	flag.BoolVar(&config.Recursive, "recursive", false, "Process subdirectories recursively")
 	flag.StringVar(&config.TargetDir, "target", "", "Target directory for sorted files (default: source directory)")
-	flag.StringVar(&config.SourceDir, "source", "", "Source directory to process (default: current directory)")
+	flag.StringVar(&config.SourceDir, "source", defaultDir, "Source directory to process (default: executable directory)")
 	flag.BoolVar(&config.Version, "version", false, "Show version information")
 	flag.Parse()
+
+	// If target is not specified, use source directory
+	if config.TargetDir == "" {
+		config.TargetDir = config.SourceDir
+	}
+
 	return config
 }
